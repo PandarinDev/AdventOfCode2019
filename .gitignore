@@ -1,0 +1,7 @@
+*.exe
+*.ilk
+*.pdb
+*.o
+/.vscode
+/Build
+/Day1/Day1
