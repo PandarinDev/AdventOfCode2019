@@ -45,6 +45,6 @@ int main(int argc, char** argv) {
             }
         }
     }
-    std::cerr << "Couldn't find required noun and verb for exported result." << std::endl;
+    std::cerr << "Couldn't find required noun and verb for expected result." << std::endl;
     return 1;
 }

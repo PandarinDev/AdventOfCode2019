@@ -1,0 +1,3 @@
+## Day #2
+
+The second problem consists of two parts and is significantly harder than the first one. Basically you receive a list of integers that are opcodes along with parameters and you should execute these opcodes that modify said integers, meaning that the program is changing itself while it is running. Luckily we only have 3 opcodes (one of which is halting the execution) and the implementation is rather simple so far. Every time we need to seed the program with two values called the "noun" and the "verb" which are the constants 12 and 2 for Part1 - in Part2, however the problem is reversed and we're given a solution for which we need to find the appropriate "noun" and "verb".
