@@ -167,7 +167,7 @@ struct Grid {
             for (std::size_t steps = 0; steps < coordinates.size(); ++steps) {
                 const auto& coordinate = coordinates[steps];
                 wire1_path.emplace(coordinate);
-                wire1_steps_to.try_emplace(coordinate, steps);
+                wire1_steps_to.try_emplace(coordinate, steps + 1);
             }
             current_coords = coordinates.at(coordinates.size() - 1);
         }
@@ -179,7 +179,7 @@ struct Grid {
             for (std::size_t steps = 0; steps < coordinates.size(); ++steps) {
                 const auto& coordinate = coordinates[steps];
                 wire2_path.emplace(coordinate);
-                wire2_steps_to.try_emplace(coordinate);
+                wire2_steps_to.try_emplace(coordinate, steps + 1);
             }
             current_coords = coordinates.at(coordinates.size() - 1);
         }
