@@ -162,24 +162,24 @@ struct Grid {
         std::unordered_map<Coordinate, std::size_t> wire2_steps_to;
         
         // Walk the path of wire#1
+        std::size_t steps = 0;
         for (const auto& movement : wire1_movements) {
             auto coordinates = movement.move(current_coords);
-            for (std::size_t steps = 0; steps < coordinates.size(); ++steps) {
-                const auto& coordinate = coordinates[steps];
+            for (const auto& coordinate : coordinates) {
                 wire1_path.emplace(coordinate);
-                wire1_steps_to.try_emplace(coordinate, steps + 1);
+                wire1_steps_to.try_emplace(coordinate, ++steps);
             }
             current_coords = coordinates.at(coordinates.size() - 1);
         }
 
         // Walk the path of wire#2
         current_coords = origin;
+        steps = 0;
         for (const auto& movement : wire2_movements) {
             auto coordinates = movement.move(current_coords);
-            for (std::size_t steps = 0; steps < coordinates.size(); ++steps) {
-                const auto& coordinate = coordinates[steps];
+            for (const auto& coordinate : coordinates) {
                 wire2_path.emplace(coordinate);
-                wire2_steps_to.try_emplace(coordinate, steps + 1);
+                wire2_steps_to.try_emplace(coordinate, ++steps);
             }
             current_coords = coordinates.at(coordinates.size() - 1);
         }
