@@ -131,15 +131,21 @@ struct Grid {
         
         // Walk the path of wire#1
         for (const auto& movement : wire1_movements) {
-            current_coords = movement.move(current_coords);
-            wire1_path.emplace(current_coords);
+            auto coordinates = movement.move(current_coords);
+            for (const auto& coordinate : coordinates) {
+                wire1_path.emplace(coordinate);
+            }
+            current_coords = coordinates.at(coordinates.size() - 1);
         }
 
         // Walk the path of wire#2
         current_coords = origin;
         for (const auto& movement : wire2_movements) {
-            current_coords = movement.move(current_coords);
-            wire2_path.emplace(current_coords);
+            auto coordinates = movement.move(current_coords);
+            for (const auto& coordinate : coordinates) {
+                wire2_path.emplace(coordinate);
+            }
+            current_coords = coordinates.at(coordinates.size() - 1);
         }
 
         return Grid(std::move(wire1_path), std::move(wire2_path));
