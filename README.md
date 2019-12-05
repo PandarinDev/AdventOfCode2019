@@ -7,4 +7,4 @@ cmake ..
 cmake --build .
 ctest
 ```
-Every project will be built in it's own directory, meaning that the first solution will be under the `Day1` folder as `Day1.exe` on Windows or as `Day1` on Linux. It is important that every executable expects an `input.txt` put directly next to it, so if you move the executable file you should also move the input file along with it. I will try and add a short explanation under every directory that describes how I solve each problem.
+Every project will be built in it's own directory, meaning that the first solution's first part will be under the `Day1` folder as `Day1_Part1.exe` on Windows or as `Day1_Part1` on Linux. It is important that every executable expects an `input.txt` put directly next to it, so if you move the executable file you should also move the input file along with it. I will try and add a short explanation under every directory that describes how I solve each problem.

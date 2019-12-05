@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <functional>
 #include <unordered_set>
+#include <unordered_map>
 
 enum class Direction {
     UP = 'U',
@@ -45,6 +46,21 @@ struct Coordinate {
     }
 
 };
+
+namespace std {
+
+    template<>
+    struct hash<Coordinate> {
+
+        // This is a simple hash-combine for the two integer values present in coordinate.
+        // The exact implementation was taken over from Boost's hash_combine.
+        std::size_t operator()(const Coordinate& coordinate) const {
+            auto seed = hash<std::int64_t>{}(coordinate.x);
+            return hash<std::int64_t>{}(coordinate.y) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+        }
+
+    };
+}
 
 struct Movement {
 
@@ -95,22 +111,6 @@ struct Movement {
 
 };
 
-namespace std {
-
-    template<>
-    struct hash<Coordinate> {
-
-        // This is a simple hash-combine for the two integer values present in coordinate.
-        // The exact implementation was taken over from Boost's hash_combine.
-        std::size_t operator()(const Coordinate& coordinate) const {
-            auto seed = hash<std::int64_t>{}(coordinate.x);
-            return hash<std::int64_t>{}(coordinate.y) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-        }
-
-    };
-
-}
-
 std::size_t manhattan_distance(const Coordinate& c0, const Coordinate& c1) {
     return std::abs(c0.x - c1.x) + std::abs(c0.y - c1.y);
 }
@@ -119,11 +119,17 @@ struct Grid {
 
     std::unordered_set<Coordinate> wire1_path;
     std::unordered_set<Coordinate> wire2_path;
+    std::unordered_map<Coordinate, std::size_t> wire1_steps_to;
+    std::unordered_map<Coordinate, std::size_t> wire2_steps_to;
 
-    template<typename T>
-    Grid(T&& wire1_path, T&& wire2_path) :
-        wire1_path(std::forward<T>(wire1_path)),
-        wire2_path(std::forward<T>(wire2_path)) {}
+    Grid(std::unordered_set<Coordinate>&& wire1_path,
+        std::unordered_set<Coordinate>&& wire2_path,
+        std::unordered_map<Coordinate, std::size_t>&& wire1_steps_to,
+        std::unordered_map<Coordinate, std::size_t>&& wire2_steps_to) :
+        wire1_path(std::move(wire1_path)),
+        wire2_path(std::move(wire2_path)),
+        wire1_steps_to(std::move(wire1_steps_to)),
+        wire2_steps_to(std::move(wire2_steps_to)) {}
 
     bool is_wire1_on(const Coordinate& coord) const {
         return wire1_path.find(coord) != wire1_path.end();
@@ -152,12 +158,16 @@ struct Grid {
         Coordinate current_coords = origin;
         std::unordered_set<Coordinate> wire1_path;
         std::unordered_set<Coordinate> wire2_path;
+        std::unordered_map<Coordinate, std::size_t> wire1_steps_to;
+        std::unordered_map<Coordinate, std::size_t> wire2_steps_to;
         
         // Walk the path of wire#1
         for (const auto& movement : wire1_movements) {
             auto coordinates = movement.move(current_coords);
-            for (const auto& coordinate : coordinates) {
+            for (std::size_t steps = 0; steps < coordinates.size(); ++steps) {
+                const auto& coordinate = coordinates[steps];
                 wire1_path.emplace(coordinate);
+                wire1_steps_to.try_emplace(coordinate, steps);
             }
             current_coords = coordinates.at(coordinates.size() - 1);
         }
@@ -166,13 +176,19 @@ struct Grid {
         current_coords = origin;
         for (const auto& movement : wire2_movements) {
             auto coordinates = movement.move(current_coords);
-            for (const auto& coordinate : coordinates) {
+            for (std::size_t steps = 0; steps < coordinates.size(); ++steps) {
+                const auto& coordinate = coordinates[steps];
                 wire2_path.emplace(coordinate);
+                wire2_steps_to.try_emplace(coordinate);
             }
             current_coords = coordinates.at(coordinates.size() - 1);
         }
 
-        return Grid(std::move(wire1_path), std::move(wire2_path));
+        return Grid(
+            std::move(wire1_path),
+            std::move(wire2_path),
+            std::move(wire1_steps_to),
+            std::move(wire2_steps_to));
     }
 
 };

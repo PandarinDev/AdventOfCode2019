@@ -1,4 +1,5 @@
 add_subdirectory(Part1)
+add_subdirectory(Part2)
 
 add_executable(Day3Tests day3_tests.cpp)
 target_link_libraries(Day3Tests Catch2::Catch2)
