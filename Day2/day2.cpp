@@ -33,9 +33,9 @@ struct Executor {
     Executor(Container&& values) :
         instruction_pointer(0), values(std::forward<Container>(values)), finished_execution(false) {}
 
-        // According to the instructions we need to replace position#1 with the value
-    void initialize(int noun, int verb) {
-        // of noun and position#2 with the value of verb before running the program.
+    // According to the instructions we need to replace position#1 with the value
+    // of noun and position#2 with the value of verb before running the program.
+    void initialize(std::size_t noun, std::size_t verb) {
         this->values[1] = noun;
         this->values[2] = verb;
     }
