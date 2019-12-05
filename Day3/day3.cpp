@@ -28,6 +28,22 @@ struct Coordinate {
         return !(*this == other);
     }
 
+    Coordinate up() const {
+        return { x, y + 1 };
+    }
+
+    Coordinate right() const {
+        return { x  + 1, y };
+    }
+
+    Coordinate down() const {
+        return { x, y - 1 };
+    }
+
+    Coordinate left() const {
+        return { x  - 1, y };
+    }
+
 };
 
 struct Movement {
@@ -54,10 +70,18 @@ struct Movement {
     std::vector<Coordinate> move(Coordinate current) const {
         std::function<Coordinate(const Coordinate&)> stepping_function;
         switch (direction) {
-        case Direction::UP: stepping_function = [](const auto& current) { return Coordinate(current.x, current.y + 1); };
-        case Direction::RIGHT: stepping_function = [](const auto& current) { return Coordinate(current.x + 1, current.y); };
-        case Direction::DOWN: stepping_function = [](const auto& current) { return Coordinate(current.x, current.y - 1); };
-        case Direction::LEFT: stepping_function = [](const auto& current) { return Coordinate(current.x - 1, current.y); };
+        case Direction::UP:
+            stepping_function = &Coordinate::up;
+            break;
+        case Direction::RIGHT:
+            stepping_function = &Coordinate::right;
+            break;
+        case Direction::DOWN:
+            stepping_function = &Coordinate::down;
+            break;
+        case Direction::LEFT:
+            stepping_function = &Coordinate::left;
+            break;
         default: throw std::runtime_error("Unhandled direction value.");
         }
 
@@ -109,7 +133,7 @@ struct Grid {
         return wire2_path.find(coord) != wire2_path.end();
     }
 
-    std::unordered_set<Coordinate> get_all_intersections() const {
+    std::unordered_set<Coordinate> get_intersections() const {
         std::unordered_set<Coordinate> intersections;
         for (const auto& coord : wire1_path) {
             if (is_wire2_on(coord)) {
