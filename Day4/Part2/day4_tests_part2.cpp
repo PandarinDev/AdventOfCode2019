@@ -6,4 +6,5 @@ TEST_CASE("Check if a number matches the criteria for task part#2") {
     REQUIRE(number_matches_criteria(112233));
     REQUIRE(!number_matches_criteria(123444));
     REQUIRE(number_matches_criteria(111122));
+    REQUIRE(!number_matches_criteria(1234445));
 }
